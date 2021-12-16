@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import CreateBlog from './components/CreateBlog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -16,11 +17,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+  const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      /* noteServices.setToken(user.token) */
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -33,6 +34,7 @@ const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
       window.localStorage.setItem(
         'loggedNoteappUser', JSON.stringify(userRes)
       ) 
+      blogService.setToken(userRes.token)
       setUser(userRes)
       setUsername('')
       setPassword('')
@@ -66,7 +68,7 @@ const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
         value={password}
         name="Password"
         onChange={({ target }) => setPassword(target.value)}
-      />
+        />
     </div>
     <button type="submit">login</button>
   </form>      
@@ -85,11 +87,14 @@ const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     return (
       <div>
         <h2>blogs</h2>
-
+        
         <h4>
           {user.username} logged in
           <button onClick={handleLogout}>Logout</button>
         </h4> 
+
+        <CreateBlog setBlogs={setBlogs} blogs={blogs}/>
+        <br></br>
 
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
@@ -102,6 +107,7 @@ const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     <div>
       {user === null ? notLoggedIn() : alreadyLoggedIn()}
     </div>
+    
     
   )
 }
