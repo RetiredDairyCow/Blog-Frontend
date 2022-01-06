@@ -5,10 +5,9 @@ const CreateBlog = (props) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-
-
+  
   const handleBlogCreation = async (event) => {
-    console.log('Inside creation');
+    
     event.preventDefault()
     const newBlog = {
       title: title,
@@ -21,6 +20,12 @@ const CreateBlog = (props) => {
       .then(res => {
         props.setBlogs(props.blogs.concat(res))
       })
+    
+    props.setNotification(`Blog "${title}" created successfully`)
+    setTimeout(() => {
+      props.setNotification(null)
+    }, 4000)
+    
   }
 
   return (

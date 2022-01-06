@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import CreateBlog from './components/CreateBlog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [notificationMessage, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -40,7 +43,10 @@ const App = () => {
       setPassword('')
     }
     catch (exception) {
-      console.log('Wrong Credentials')
+      setNotification('Wrong Credentials')
+      setTimeout(() => {
+        setNotification(null)
+      }, 4000)
     }
 
   }
@@ -78,6 +84,7 @@ const App = () => {
     return (
       <div>
       <h2>Log in to the application</h2>
+      <Notification notificationMessage={notificationMessage}/>
       {loginform()}
       </div>
     )
@@ -86,14 +93,15 @@ const App = () => {
   const alreadyLoggedIn = () => {
     return (
       <div>
-        <h2>blogs</h2>
+        <h2>Blogs</h2>
+        <Notification notificationMessage={notificationMessage}/>
         
         <h4>
           {user.username} logged in
           <button onClick={handleLogout}>Logout</button>
         </h4> 
 
-        <CreateBlog setBlogs={setBlogs} blogs={blogs}/>
+        <CreateBlog setBlogs={setBlogs} blogs={blogs} notificationMessage={notificationMessage} setNotification={setNotification}/>
         <br></br>
 
         {blogs.map(blog =>
